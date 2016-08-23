@@ -28,7 +28,7 @@ gulp.task('clean', function() {
 
 // Default task
 gulp.task('default', ['clean'], function() {
-    gulp.start('usemin', 'imagemin','copyfonts','copyhtml');
+    gulp.start('usemin','copyhtml', 'imagemin','copyfonts');
 });
 
 gulp.task('usemin',['jshint'], function () {
@@ -58,6 +58,8 @@ gulp.task('copyfonts', ['clean'], function() {
 gulp.task('copyhtml', ['clean'], function() {
    gulp.src('./app/*.html')
    .pipe(gulp.dest('./dist/'));
+    gulp.src('./app/views/*.html')
+   .pipe(gulp.dest('./dist/views/'));
 });
 
 // Watch
