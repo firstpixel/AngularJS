@@ -203,7 +203,7 @@ angular.module('confusionApp')
 
                   this.getPromotion = function (index){
                      return promotions[index];
-                  }
+                  };
     
                         
         })
