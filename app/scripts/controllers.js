@@ -17,7 +17,10 @@ angular.module('confusionApp')
                 },
                 function(response) {
                     $scope.message = "Error: "+response.status + " " + response.statusText;
-                });
+                }
+            );
+
+            
 
                         
             $scope.select = function(setTab) {
@@ -57,22 +60,29 @@ angular.module('confusionApp')
                         
         }])
 
-        .controller('FeedbackController', ['$scope', function($scope) {
+        .controller('FeedbackController', ['$scope', 'feedbackFactory', function($scope, feedbackFactory) {
             
+            $scope.myfeedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
+
             $scope.sendFeedback = function() {
                 
                 console.log($scope.feedback);
                 
-                if ($scope.feedback.agree && ($scope.feedback.mychannel == "")) {
+                if ($scope.feedback.agree && ($scope.feedback.mychannel === "")) {
                     $scope.invalidChannelSelection = true;
                     console.log('incorrect');
                 }
                 else {
                     $scope.invalidChannelSelection = false;
-                    $scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
-                    $scope.feedback.mychannel="";
-                    $scope.feedbackForm.$setPristine();
+                    
                     console.log($scope.feedback);
+
+                    feedbackFactory.setFeedback().save($scope.feedback);
+                    
+                    $scope.feedbackForm.$setPristine();
+                    
+                    $scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
+
                 }
             };
         }])
@@ -100,13 +110,17 @@ angular.module('confusionApp')
             
             $scope.submitComment = function () {
                 $scope.mycomment.date = new Date().toISOString();
+                $scope.mycomment.comment = $scope.userComment.comment;
+                $scope.mycomment.author = $scope.userComment.author;
+                $scope.mycomment.rating = $scope.userComment.rating;
+                console.log($scope.userComment);
                 console.log($scope.mycomment);
                 $scope.dish.comments.push($scope.mycomment);
 
                 menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
                 $scope.commentForm.$setPristine();
                 $scope.mycomment = {rating:5, comment:"", author:"", date:""};
-            }
+            };
         }])
 
         // implement the IndexController and About Controller here
@@ -115,11 +129,10 @@ angular.module('confusionApp')
             $scope.promo = {};
             $scope.showPromo = false;
             $scope.messagePromo="Loading ...";
-
-            menuFactory.getPromotion(0)
-            .then(
+            $scope.promo = menuFactory.getPromotion().get({id:0})
+            .$promise.then(
                 function(response){
-                    $scope.promo = response.data;
+                    $scope.promo = response;
                     $scope.showPromo = true;
                 },
                 function(response) {
@@ -128,20 +141,31 @@ angular.module('confusionApp')
             );
 
             
+            
             $scope.dish = {};
-            $scope.showDish = true;
+            $scope.showDish = false;
             $scope.message="Loading ...";
-            $scope.dish = menuFactory.getDishes().get({id:0});
+            $scope.dish = menuFactory.getDishes().get({id:0})
+            .$promise.then(
+                function(response){
+                    $scope.dish = response;
+                    $scope.showDish = true;
+                },
+                function(response) {
+                    $scope.message = "Error: "+response.status + " " + response.statusText;
+                }
+            );
 
 
             $scope.leader = {};
             $scope.showLeader = false;
             $scope.messageLeader="Loading ...";
 
-            corporateFactory.getLeader(0)
-            .then(
+            $scope.leader = corporateFactory.getLeaders().get({id:0})
+            .$promise.then(
                 function(response){
-                    $scope.leader = response.data;
+                    console.log(response);
+                    $scope.leader = response;
                     $scope.showLeader = true;
                 },
                 function(response) {
@@ -152,39 +176,13 @@ angular.module('confusionApp')
         }])
         .controller('AboutController', ['$scope', 'corporateFactory', function($scope, corporateFactory) {
             
-            $scope.leader = {};
-            corporateFactory.getLeader(0)
-            .then(
-                function(response){
-                    $scope.leader = response.data;
-                    $scope.showLeader = true;
-                }
-            );
-
-            $scope.leader = {};
-            $scope.showLeader = false;
-            $scope.messageLeader="Loading ...";
-
-            corporateFactory.getLeader(0)
-            .then(
-                function(response){
-                    $scope.leader = response.data;
-                    $scope.showLeader = true;
-                },
-                function(response) {
-                    $scope.messageLeader = "Error: "+response.status + " " + response.statusText;
-                }
-            );
-
-
             $scope.leaders = {};
             $scope.showLeaders = false;
             $scope.messageLeaders="Loading ...";
 
-            corporateFactory.getLeaders()
-            .then(
+            corporateFactory.getLeaders().query(
                 function(response){
-                    $scope.leaders = response.data;
+                    $scope.leaders = response;
                     $scope.showLeaders = true;
                 },
                 function(response) {
@@ -192,7 +190,5 @@ angular.module('confusionApp')
                 }
             );
 
-        }])
 
-
-;
+        }]);
