@@ -32,7 +32,7 @@ gulp.task('default', ['clean'], function() {
 });
 
 gulp.task('usemin',['jshint'], function () {
-  return gulp.src('./app/index.html')
+  return gulp.src('./app/**/*.html')
       .pipe(usemin({
         css:[minifycss(),rev()],
         js: [ngannotate(),uglify(),rev()]
@@ -60,6 +60,10 @@ gulp.task('copyhtml', ['clean'], function() {
    .pipe(gulp.dest('./dist/'));
     gulp.src('./app/views/*.html')
    .pipe(gulp.dest('./dist/views/'));
+
+    gulp.src('./dist/**/*.*')
+   .pipe(gulp.dest('../json-server/public/'));
+ 
 });
 
 // Watch

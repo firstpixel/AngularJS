@@ -6,8 +6,11 @@
                 <h3 align=center>Our Lipsmacking Culinary Creations</h3>
             </div>
             <div class="col-xs-12 col-sm-9 col-sm-pull-3" >
-				<h4>Featured Dish</h4>
-                <div class="media">
+				        <h4>Featured Dish</h4>
+                <div ng-if="!showDish">
+                    <h3>{{message}}</h3>
+                </div>
+                <div class="media" ng-if="showDish">
                    <div class="media-left media-middle">
                       <a href="#">
                       <img class="media-object img-thumbnail"
@@ -31,9 +34,12 @@
                 <h3 align=center>This Month's Promotions</h3>
             </div>
             <div class="col-xs-12 col-sm-9"  >
-				<h4>Promotion</h4>
-                <div class="media">
-                   <div class="media-left media-middle">
+				    <h4>Promotion</h4>
+                <div ng-if="!showPromo">
+                    <h3>{{messagePromo}}</h3>
+                </div>
+                <div class="media" ng-if="showPromo">
+                       <div class="media-left media-middle">
                       <a href="#">
                       <img class="media-object img-thumbnail"
                        ng-src={{promo.image}} alt="{{promo.name}}">
@@ -55,7 +61,10 @@
             </div>
             <div class="col-xs-12 col-sm-9 col-sm-pull-3" >
 				<h4>Implement the Executive Chef Info Here</h4>
-                <div class="media">
+                <div ng-if="!showLeader">
+                    <h3>{{messageLeader}}</h3>
+                </div>
+                <div class="media" ng-if="showLeader">
                     <div class="media-left media-middle">
                           <a href="#">
                           <img class="media-object img-thumbnail"
